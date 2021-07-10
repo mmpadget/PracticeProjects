@@ -53,16 +53,23 @@ class shape {
 }
 
 function drawShape(shape){
-  ctx.beginPath(shape.shapeVerts[0].x, shape.shapeVerts[0].y);
-  for (let i = 1; i < shape.numSides; i++){
+  ctx.beginPath();
+  for (let i = 0; i < shape.numSides; i++){
     ctx.lineTo(shape.shapeVerts[i].x, shape.shapeVerts[i].y);
-    ctx.closePath();
+
   }
+  ctx.closePath();
+  ctx.stroke();
 }
 
 
-myShape = new shape(100,90,5,10);
-drawShape(myShape);  
+myShape = new shape(100,90,5,25);
+drawShape(myShape);
+myShape1 = new shape(130,120,7,15);
+drawShape(myShape1);  
+myShape2 = new shape(200,150,3,10);
+drawShape(myShape2);
+  
 console.log(myShape.shapeCenterX);
 console.log(myShape.shapeCenterY);
 console.log(myShape.numSides);
