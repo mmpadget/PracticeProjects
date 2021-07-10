@@ -9,66 +9,63 @@
   
 <canvas id= "myCanvas" width="736" height="736"></canvas>
 <script type="text/javascript">
+
 let canvas = document.getElementById("myCanvas");
 let ctx = canvas.getContext("2d");
 ctx.imageSmoothingEnabled = false;
 document.body.style.zoom = "100%";
-
-function storeCoordinate(xVal, yVal, arrayThing)
-{
-  arrayThing.push({x: xVal, y: yVal});
-}
-function addStuff(x, y){
-  let z = 0;
-  z = x + y;
-  return z;
-}
-function addVertsToArray(x, y, sides, radius)
-{
-  let tempArray = [];
-  let circ = 2 * Math.PI;
-  let arcSeg = circ / sides;
-  let xVal = 0;
-  let yVal = 0;
-
-  for (let i = 0; i < sides; i++)
-    {
-      xVal = Math.round(Math.cos(arcSeg * i) * radius + x);
-      yVal = Math.round(Math.sin(arcSeg * i) * radius + y);
-      storeCoordinate(xVal, yVal, tempArray);
-    }
-  return tempArray;
-}
   
 class shape {
-  constructor(startX, startY, sides, radius) {
-    this.shapeCenterX = startX;
-    this.shapeCenterY = startY;
-    this.numSides = sides;
-    this.radius = radius;
-    this.sumSum = addStuff(this.shapeCenterX, this.shapeCenterY);
-    this.shapeVerts = addVertsToArray(this.shapeCenterX, this.shapeCenterY, this.numSides, this.radius);
-  }
-  //storeCoordinate(3, 5, this.shapeVerts);
+	constructor(startX, startY, sides, radius) {
+		this.shapeCenterX = startX;
+		this.shapeCenterY = startY;
+		this.numSides = sides;
+		this.radius = radius;
+		this.sumSum = this.addStuff(this.shapeCenterX, this.shapeCenterY);
+		this.shapeVerts = this.addVertsToArray(this.shapeCenterX, this.shapeCenterY, this.numSides, this.radius);
+	}
+	//storeCoordinate(3, 5, this.shapeVerts);
+
+	addStuff(x, y) {
+		return x + y;
+	}
+
+	addVertsToArray(x, y, sides, radius) {
+		let tempArray = [];
+		let circ = 2 * Math.PI;
+		let arcSeg = circ / sides;
+		let xVal = 0;
+		let yVal = 0;
+
+		for (let i = 0; i < sides; i++) {
+			xVal = Math.round(Math.cos(arcSeg * i) * radius + x);
+			yVal = Math.round(Math.sin(arcSeg * i) * radius + y);
+			tempArray.push({x: xVal, y: yVal})
+		}
+		return tempArray;
+	}
+
+	drawShape(){
+		ctx.beginPath();
+
+		for (let i = 0; i < this.numSides; i++){
+			ctx.lineTo(this.shapeVerts[i].x, this.shapeVerts[i].y);
+		}
+
+		ctx.closePath();
+		ctx.stroke();
+	}
 }
 
-function drawShape(shape){
-  ctx.beginPath();
-  for (let i = 0; i < shape.numSides; i++){
-    ctx.lineTo(shape.shapeVerts[i].x, shape.shapeVerts[i].y);
 
-  }
-  ctx.closePath();
-  ctx.stroke();
-}
 
 
 myShape = new shape(100,90,5,25);
-drawShape(myShape);
+myShape.drawShape();
 myShape1 = new shape(130,120,7,15);
-drawShape(myShape1);  
+myShape1.drawShape();  
 myShape2 = new shape(200,150,3,10);
-drawShape(myShape2);
+myShape2.drawShape();
   
 console.log(myShape.shapeCenterX);
 console.log(myShape.shapeCenterY);
