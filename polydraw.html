@@ -21,12 +21,12 @@ class shape {
 		this.shapeCenterY = startY;
 		this.numSides = sides;
 		this.radius = radius;
-		this.sumSum = this.addStuff(this.shapeCenterX, this.shapeCenterY);
+		this.sumSum = shape.addStuff(this.shapeCenterX, this.shapeCenterY);
 		this.shapeVerts = this.addVertsToArray(this.shapeCenterX, this.shapeCenterY, this.numSides, this.radius);
 	}
 	//storeCoordinate(3, 5, this.shapeVerts);
 
-	addStuff(x, y) {
+	static addStuff(x, y) {
 		return x + y;
 	}
 
