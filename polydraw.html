@@ -1,0 +1,74 @@
+<html> 
+<head>
+  <style>
+   *{padding: 0; margin:0;}
+   canvas{ background: #eee; display: block; margin: 0 auto;}
+   </style>
+</head>
+<body>
+  
+<canvas id= "myCanvas" width="736" height="736"></canvas>
+<script type="text/javascript">
+let canvas = document.getElementById("myCanvas");
+let ctx = canvas.getContext("2d");
+ctx.imageSmoothingEnabled = false;
+document.body.style.zoom = "100%";
+
+function storeCoordinate(xVal, yVal, arrayThing)
+{
+  arrayThing.push({x: xVal, y: yVal});
+}
+function addStuff(x, y){
+  let z = 0;
+  z = x + y;
+  return z;
+}
+function addVertsToArray(x, y, sides, radius)
+{
+  let tempArray = [];
+  let circ = 2 * Math.PI;
+  let arcSeg = circ / sides;
+  let xVal = 0;
+  let yVal = 0;
+
+  for (let i = 0; i < sides; i++)
+    {
+      xVal = Math.round(Math.cos(arcSeg * i) * radius + x);
+      yVal = Math.round(Math.sin(arcSeg * i) * radius + y);
+      storeCoordinate(xVal, yVal, tempArray);
+    }
+  return tempArray;
+}
+  
+class shape {
+  constructor(startX, startY, sides, radius) {
+    this.shapeCenterX = startX;
+    this.shapeCenterY = startY;
+    this.numSides = sides;
+    this.radius = radius;
+    this.sumSum = addStuff(this.shapeCenterX, this.shapeCenterY);
+    this.shapeVerts = addVertsToArray(this.shapeCenterX, this.shapeCenterY, this.numSides, this.radius);
+  }
+  //storeCoordinate(3, 5, this.shapeVerts);
+}
+
+function drawShape(shape){
+  ctx.beginPath(shape.shapeVerts[0].x, shape.shapeVerts[0].y);
+  for (let i = 1; i < shape.numSides; i++){
+    ctx.lineTo(shape.shapeVerts[i].x, shape.shapeVerts[i].y);
+    ctx.closePath();
+  }
+}
+
+
+myShape = new shape(100,90,5,10);
+drawShape(myShape);  
+console.log(myShape.shapeCenterX);
+console.log(myShape.shapeCenterY);
+console.log(myShape.numSides);
+console.log(myShape.shapeVerts);
+console.log(myShape.sumSum);
+
+</script>
+</body>
+</html>
