@@ -1,0 +1,103 @@
+<html> 
+<head>
+  <style>
+   *{padding: 0; margin:0;}
+   canvas{ background: #eee; display: block; margin: 0 auto;}
+   </style>
+</head>
+<body>
+  
+<canvas id= "myCanvas" width="400" height="400"></canvas>
+<script type="text/javascript">
+
+let canvas = document.getElementById("myCanvas");
+let ctx = canvas.getContext("2d");
+ctx.imageSmoothingEnabled = false;
+document.body.style.zoom = "100%";
+
+class dopeShit {
+  
+  static randPoly() {
+    let x = Math.floor(Math.random() * 361 + 20);
+    let y = Math.floor(Math.random() * 361 + 20);
+    let sides = Math.floor(Math.random() * 7 + 3);
+    let radius = Math.floor(Math.random() * 31 + 5);
+    let tempArray = [x, y, sides, radius];
+    return tempArray;
+  }
+  
+  static populateObjArray (num) {
+    for (let i = 0; i < num; i++) {
+      let newObj = new shape(dopeShit.randPoly());
+      objArray.push(newObj);
+    }
+  }
+  
+  static drawObjArray (objArray) {
+    for (let i = 0; i < objArray.length; i++) {
+      //shape.drawShape();
+    }
+  }
+}
+
+
+class shape {
+	constructor(tempArray) {
+		this.shapeCenterX = tempArray[0];
+		this.shapeCenterY = tempArray[1];
+		this.numSides = tempArray[2];
+		this.radius = tempArray[3];
+		this.sumSum = shape.addStuff(this.shapeCenterX, this.shapeCenterY);
+		this.shapeVerts = this.addVertsToArray(this.shapeCenterX, this.shapeCenterY, this.numSides, this.radius);
+	}
+	//storeCoordinate(3, 5, this.shapeVerts);
+
+	static addStuff(x, y) {
+		return x + y;
+	}
+
+	addVertsToArray(x, y, sides, radius) {
+		let tempArray = [];
+		let circ = 2 * Math.PI;
+		let arcSeg = circ / sides;
+		let xVal = 0;
+		let yVal = 0;
+
+		for (let i = 0; i < sides; i++) {
+			xVal = Math.round(Math.cos(arcSeg * i) * radius + x);
+			yVal = Math.round(Math.sin(arcSeg * i) * radius + y);
+			tempArray.push({x: xVal, y: yVal})
+		}
+		return tempArray;
+	}
+
+	drawShape(){
+		ctx.beginPath();
+
+		for (let i = 0; i < this.numSides; i++){
+			ctx.lineTo(this.shapeVerts[i].x, this.shapeVerts[i].y);
+		}
+
+		ctx.closePath();
+		ctx.stroke();
+	}
+}
+
+objArray = [];
+dopeShit.populateObjArray(5);
+console.log(objArray);
+//dopeShit.drawObjArray(objArray);
+
+
+myShape = new shape(dopeShit.randPoly());
+myShape.drawShape();
+myShape1 = new shape(dopeShit.randPoly());
+myShape1.drawShape();  
+myShape2 = new shape(dopeShit.randPoly());
+myShape2.drawShape();
+  
+
+
+</script>
+</body>
+</html>
