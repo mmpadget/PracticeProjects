@@ -17,36 +17,34 @@ document.body.style.zoom = "100%";
 
 class dopeShit {
   
-  static randPoly() {
+  static randShape() {
     let x = Math.floor(Math.random() * 361 + 20);
     let y = Math.floor(Math.random() * 361 + 20);
     let sides = Math.floor(Math.random() * 7 + 3);
     let radius = Math.floor(Math.random() * 31 + 5);
-    let tempArray = [x, y, sides, radius];
-    return tempArray;
+    return new shape(x, y, sides, radius);
   }
   
   static populateObjArray (num) {
     for (let i = 0; i < num; i++) {
-      let newObj = new shape(dopeShit.randPoly());
-      objArray.push(newObj);
+      objArray.push(dopeShit.randShape());
     }
   }
   
   static drawObjArray (objArray) {
     for (let i = 0; i < objArray.length; i++) {
-      //shape.drawShape();
+      objArray[i].drawShape();
     }
   }
 }
 
 
 class shape {
-	constructor(tempArray) {
-		this.shapeCenterX = tempArray[0];
-		this.shapeCenterY = tempArray[1];
-		this.numSides = tempArray[2];
-		this.radius = tempArray[3];
+	constructor(x, y, s, r) {
+		this.shapeCenterX = x;
+		this.shapeCenterY = y;
+		this.numSides = s;
+		this.radius = r;
 		this.sumSum = shape.addStuff(this.shapeCenterX, this.shapeCenterY);
 		this.shapeVerts = this.addVertsToArray(this.shapeCenterX, this.shapeCenterY, this.numSides, this.radius);
 	}
@@ -86,14 +84,14 @@ class shape {
 objArray = [];
 dopeShit.populateObjArray(5);
 console.log(objArray);
-//dopeShit.drawObjArray(objArray);
+dopeShit.drawObjArray(objArray);
 
 
-myShape = new shape(dopeShit.randPoly());
+myShape = dopeShit.randShape();
 myShape.drawShape();
-myShape1 = new shape(dopeShit.randPoly());
+myShape1 = dopeShit.randShape();
 myShape1.drawShape();  
-myShape2 = new shape(dopeShit.randPoly());
+myShape2 = dopeShit.randShape();
 myShape2.drawShape();
   
 
