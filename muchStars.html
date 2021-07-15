@@ -1,0 +1,159 @@
+<html> 
+<head>
+  <style>
+   *{padding: 0; margin:0;}
+   canvas{ background: #eee; display: block; margin: 0 auto;}
+   </style>
+</head>
+<body>
+  
+<canvas id= "myCanvas" width="600" height="600"></canvas>
+<script type="text/javascript">
+
+let canvas = document.getElementById("myCanvas");
+let ctx = canvas.getContext("2d");
+//ctx.imageSmoothingEnabled = false;
+document.body.style.zoom = "100%";
+
+class dopeShit {
+  
+  static randPoly() {
+    let x = Math.floor(Math.random() * 561 + 20);
+    let y = Math.floor(Math.random() * 561 + 20);
+    let sides = Math.floor(Math.random() * 5 + 3);
+    let radius = Math.floor(Math.random() * 31 + 5);
+    let tempArray = [x, y, sides, radius];
+    return tempArray;
+  }
+  
+  static populateObjArray (num) {
+    for (let i = 0; i < num; i++) {
+      let newObj = new shape(dopeShit.randPoly());
+      objArray.push(newObj);
+    }
+  }
+  
+//  static drawObjArray (objArray) {
+//    objArray.forEach(drawShape());
+//  }
+  
+  static drawObjArray (objArray) {
+    for (let i = 0; i < objArray.length; i++) {
+      objArray[i].drawDiamondStar();
+    }
+  }
+}
+
+
+class shape {
+  constructor(tempArray) {
+  this.shapeCenterX = tempArray[0];
+  this.shapeCenterY = tempArray[1];
+  this.numSides = tempArray[2];
+  this.radius = tempArray[3];
+  this.rotationDir = 
+  this.shapeVerts = this.addVertsToStarArray(
+    this.shapeCenterX,
+    this.shapeCenterY,
+    this.numSides,
+    this.radius);
+  }
+
+
+  addVertsToArray(x, y, sides, radius) {
+    let tempArray = [];
+    let circ = 2 * Math.PI;
+    let arcSeg = circ / sides;
+    let xVal = 0;
+    let yVal = 0;
+
+    for (let i = 0; i < sides; i++) {
+      xVal = Math.round(Math.cos(arcSeg * i) * radius + x);
+      yVal = Math.round(Math.sin(arcSeg * i) * radius + y);
+      tempArray.push({x: xVal, y: yVal})
+    }
+    return tempArray;
+	}
+  
+  addVertsToStarArray(x, y, sides, radius) {
+    let tempArray = [];
+    let circ = 2 * Math.PI;
+    let arcSeg = circ / sides;
+    let smArcSeg = arcSeg / 4;
+    let rMod = .5;
+    let xVal1 = 0;
+    let yVal1 = 0;
+    let xVal2 = 0;
+    let yVal2 = 0;
+    let xVal3 = 0;
+    let yVal3 = 0;
+
+    for (let i = 0; i < sides; i++) {
+      xVal1 = Math.round(Math.cos((arcSeg * i) - smArcSeg) * (radius * rMod) + x);
+      yVal1 = Math.round(Math.sin((arcSeg * i) - smArcSeg) * (radius * rMod) + y);
+      xVal2 = Math.round(Math.cos(arcSeg * i) * radius + x);
+      yVal2 = Math.round(Math.sin(arcSeg * i) * radius + y);
+      xVal3 = Math.round(Math.cos((arcSeg * i) + smArcSeg) * (radius * rMod) + x);
+      yVal3 = Math.round(Math.sin((arcSeg * i) + smArcSeg) * (radius * rMod) + y);
+      tempArray.push({x1: xVal1, y1: yVal1, x2: xVal2, y2: yVal2, x3: xVal3, y3: yVal3})
+    }
+    return tempArray;
+	}
+
+    drawDiamondStar(){
+      ctx.beginPath();
+      ctx.lineJoin = 'round';
+      ctx.shadowColor = 'grey';
+      ctx.shadowOffsetX = 25;
+      ctx.shadowOffsetY = 25;
+      ctx.shadowBlur = 10;
+      ctx.strokeStyle = 'red';
+      ctx.fillStyle = 'yellow';
+      ctx.lineWidth = 1;
+      
+      for (let i = 0; i < this.numSides; i++){
+        ctx.moveTo(this.shapeCenterX, this.shapeCenterY)
+      	ctx.lineTo(this.shapeVerts[i].x1, this.shapeVerts[i].y1);
+        ctx.lineTo(this.shapeVerts[i].x2, this.shapeVerts[i].y2);
+        ctx.lineTo(this.shapeVerts[i].x3, this.shapeVerts[i].y3);
+        ctx.closePath();
+        ctx.translate(.5, .5);
+        ctx.fill();
+        ctx.stroke();
+      }
+      
+    }
+  
+	drawShape(){
+      ctx.beginPath();
+      ctx.translate(.5, .5);
+      ctx.strokeStyle = 'green';
+      ctx.fillStyle = 'yellow';
+      ctx.lineWidth = 3;
+      
+      for (let i = 0; i < this.numSides; i++){
+      	ctx.lineTo(this.shapeVerts[i].x, this.shapeVerts[i].y);
+      }
+
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+	}
+}
+var t0 = performance.now()
+
+objArray = [];
+dopeShit.populateObjArray(50);
+console.log(objArray);
+dopeShit.drawObjArray(objArray);
+
+var t1 = performance.now()
+console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")
+
+console.log(ctx);
+console.log(Math);
+
+
+</script>
+</body>
+</html>
