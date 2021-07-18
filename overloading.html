@@ -1,0 +1,79 @@
+<html>
+    <head>
+        <meta charset="UTF-8" />
+    </head>
+    <body>
+        <script type="text/javascript">
+            // We can define objects willy nilly just by associating names with values
+            // and enclosing them in brackets: { name1: value1, name2: value2, ... }.
+
+            let dog = { doSomething: function () { console.log("I'm a dog.")} };
+            let cat = { doSomething: function () { console.log("I'm a cat.")} };
+            let mouse = { doSomething: function () { console.log("I'm a mouse.")} };
+            let broken = { doSomething: 3 };
+
+            // If we have an object, and we know one of the values in it is a function,
+            // we can call it by its name.  We end up calling whatever function is in
+            // that object.
+
+            console.log("Calling `doSomething` on each object individually:")
+            console.log(dog);
+            console.log(cat);
+            console.log(mouse);
+            dog.doSomething();
+            cat.doSomething();
+            mouse.doSomething();
+
+            // If the named value is not a function, calling it will cause an error.
+
+            try {
+                broken.doSomething(); // Uncaught TypeError: 3 is not a function
+            } catch {
+                console.log("Ha ha, I knew that calling `3` as a function wouldn't work.");
+            }
+
+            // We can call the same name on different objects in an array.  This has
+            // the same effect as calling the same name on each object individually.
+
+            objects = [dog, cat, mouse];
+            console.log("Calling `doSomething` on each object in an array:")
+            console.log(objects);
+            for (let i = 0; i < objects.length; i++) {
+                objects[i].doSomething();
+            }
+
+            // We can accomplish something similar by defining classes.  There's no
+            // real difference because we don't have to restrict our array to any one
+            // class: it's just going to be an array of objects like before.
+
+            class Animal {
+                doSomething() { console.log( "I don't know what Animal I am.") };
+            }
+
+            class Dog extends Animal {
+                doSomething() { console.log( "I'm a dog.") };
+            }
+
+            class Cat extends Animal {
+                doSomething() { console.log( "I'm a cat.") };
+            }
+
+            class Mouse extends Animal {
+                doSomething() { console.log( "I'm a mouse.") };
+            }
+
+            animals = [
+                new Dog,
+                new Cat,
+                new Mouse,
+                new Animal,
+                { doSomething: function () { console.log("Yo I'm a straight-up robotic dragon.") } }
+            ];
+            console.log("Calling `doSomething` on each `Animal` object (or whatever's in there) in an array:")
+            console.log(animals);
+            for (let i = 0; i < animals.length; i++) {
+                animals[i].doSomething();
+            }
+        </script>
+    </body>
+</html>
