@@ -4,7 +4,7 @@ var ctx = gameCanvas.getContext("2d");
 let x = 100;
 let y = 100;
 let test = [];
-
+// commenting for changes
 
 let mob1 = new polyMob(['polyMob', 100, 100, 5, 50, false]);
 console.log(mob1);
