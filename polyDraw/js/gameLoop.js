@@ -10,7 +10,7 @@ class gameLoop {
     this.frameWait = 0;
     this.fps = 60;
     this.frameTime = 1000 / this.fps;
-    this.playerObj = [];
+    this.playerArray = [];
     this.mobArray = [];
     this.mobBulletArray = [];
     this.playerBulletArray = [];
@@ -18,25 +18,18 @@ class gameLoop {
     this.level = 1;
   }
 
-  updateMobPosition (array) {
-    for (let i = 0; i < array.length; i++) {
-      array[i].updateBaseVal();
-      array[i].updateVerts();
-      array[i].drawShape();
-    }
-  }
-
   static mainLoop (instance) {
     //check time of frame start
     instance.frameStart = performance.now();
-    ctx.clearRect(0, 0, 600, 600);
-    instance.updateMobPosition(instance.mobArray);
+    
+    // check if mob load needed
+
     // Check player inputs
 
     // update player position 
 
     // update mob positions
-    //updateMobPosition(this.mobArray);
+    instance.updatePosition(instance.mobArray);
 
     // update bullet positions
 
@@ -50,24 +43,42 @@ class gameLoop {
       // resolve hits and setup for next frame
     
     // clear canvas
-    //ctx.clearRect(0, 0, 600, 600);
-    // draw player
-    
+    ctx.clearRect(0, 0, 600, 600);
+
     // draw mobs
+    instance.updateDraw(instance.mobArray);
 
     // draw bullets
+
+    // draw player
+    instance.updateDraw(instance.playerArray);
+
     
     // check time elapsed from frame start
     instance.frameEnd = performance.now();
     instance.frameDelta = (instance.frameEnd - instance.frameStart);
     if (instance.frameDelta < instance.frameTime) {
       instance.frameWait = (instance.frameTime - instance.frameDelta);
+      //console.log(instance.frameDelta);
       setTimeout(function () { gameLoop.mainLoop(instance); }, instance.frameWait);
     }
     else {
-      console.log('dicks');
+      console.log('crap');
       setTimeout(function () { gameLoop.mainLoop(instance); }, 1);
     }
   }
-}
 
+  updatePosition (array) {
+    for (let i = 0; i < array.length; i++) {
+      array[i].updateBaseVal(this.playerArray[0]);
+      array[i].updateDeltaToPlayer(this.playerArray[0]);
+      array[i].updateVerts();
+    }
+  }
+
+  updateDraw (array) {
+    for (let i = 0; i < array.length; i++) {
+      array[i].drawShape();
+    }
+  }
+}

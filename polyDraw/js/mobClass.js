@@ -67,15 +67,18 @@ class polyMob extends mob {
     this.lineCol = 'red';
     this.fillCol = 'orange';
     this.radius = 20;
-    this.rotDir = 0; //0 = no rotation, 1 = clockwise, -1 = counterclock
+    this.rotDir = Math.floor(Math.random() * 2); if (this.rotDir == 0) {this.rotDir = -1};  //0 = no rotation, 1 = clockwise, -1 = counterclock
+    this.rotSpeed = 4;
   }
+
   updateVerts() {
     let tempArray = [];
     let arcSeg = this.fullCirc/this.genus;
     let xVal, yVal;
     for (let i = 0; i < this.genus; i++) {
-      xVal = Math.round(Math.cos(arcSeg * i) * this.radius + this.cenX);
-      yVal = Math.round(Math.sin(arcSeg * i) * this.radius + this.cenY);
+      xVal = Math.round(Math.cos(this.theta + (arcSeg * i)) * this.radius + this.cenX);
+      yVal = Math.round(Math.sin(this.theta + (arcSeg * i)) * this.radius + this.cenY);
+      //yVal = Math.round(Math.sin(arcSeg * i) * this.radius + this.cenY);
       tempArray.push({x: xVal, y: yVal});
     }
     this.vertArray = tempArray;
@@ -94,10 +97,16 @@ class polyMob extends mob {
     ctx.stroke();
   }
   updateBaseVal() {
-    this.cenY = (this.cenY + 4);
+    //this.cenX = (Math.cos(this.theta) * 1.5) + this.cenX;
+    this.cenY = (this.cenY + 2);
     if (this.cenY > 630) {
       this.cenY = -30;
     }
+    this.theta = this.theta + (this.rotDir * this.tic * this.rotSpeed);
+    if (Math.abs(this.theta) > this.fullCirc) {
+      this.theta = this.theta % this.fullCirc;
+    }
+    //console.log(this.theta);
   }
 }
 
@@ -158,6 +167,8 @@ class squareMob extends mob {
     let tempArray3 = [];
     let halfSq = 34; 
     let thirdSq = 19;
+    let xVal
+    let yVal
     
     //draw outline
     tempArray.push({x: (this.cenX + halfSq), y: (this.cenY + thirdSq)});
@@ -175,7 +186,14 @@ class squareMob extends mob {
     tempArray2.push({x: this.cenX, y: (this.cenY + halfSq)});
     tempArray2.push({x: this.cenX, y: (this.cenY + -halfSq)});
     this.vertArray2 = tempArray2;
+    //draw gun
+    tempArray3.push({x: this.cenX, y: this.cenY});
+    xVal = Math.round(Math.cos(this.thetaToPlayer) * 60 + this.cenX);
+    yVal =Math.round(Math.sin(this.thetaToPlayer) * 60 + this.cenY);
+    tempArray3.push({x: xVal, y: yVal});
+    this.vertArray3 = tempArray3;
   }
+
   drawShape() {
     //draw outline and fill
     ctx.beginPath();
@@ -189,17 +207,32 @@ class squareMob extends mob {
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
+    //draw cross
     ctx.beginPath();
     ctx.moveTo(this.vertArray2[0].x, this.vertArray2[0].y);
     ctx.lineTo(this.vertArray2[1].x, this.vertArray2[1].y);
     ctx.moveTo(this.vertArray2[2].x, this.vertArray2[2].y);
     ctx.lineTo(this.vertArray2[3].x, this.vertArray2[3].y);
     ctx.stroke();
+    //draw gun
+    ctx.beginPath();
+    ctx.moveTo(this.vertArray3[0].x, this.vertArray3[0].y);
+    ctx.lineTo(this.vertArray3[1].x, this.vertArray3[1].y);
+    ctx.strokeStyle = 'black';
+    ctx.stroke();
+    ctx.strokeStyle = this.lineCol;
   }
-  updateBaseVal() {
-    this.cenY = (this.cenY + 2);
+  updateBaseVal(player1) {
+    this.cenY = (this.cenY + 1.5);
     if (this.cenY > 630) {
       this.cenY = -30;
+    }
+
+    let dx = (player1.cenX - this.cenX);
+    let dy = (player1.cenY - this.cenY);
+    this.thetaToPlayer = Math.atan2(dy, dx);
+    if (this.thetaToPlayer < 0) {
+      this.thetaToPlayer = ((Math.PI + this.thetaToPlayer) + Math.PI);
     }
   }
 }
