@@ -18,9 +18,9 @@ class gameLoop {
     this.level = 1;
   }
 
-  static mainLoop (instance) {
+  mainLoop () {
     //check time of frame start
-    instance.frameStart = performance.now();
+    this.frameStart = performance.now();
     
     // check if mob load needed
 
@@ -29,7 +29,7 @@ class gameLoop {
     // update player position 
 
     // update mob positions
-    instance.updatePosition(instance.mobArray);
+    this.updatePosition(this.mobArray);
 
     // update bullet positions
 
@@ -46,25 +46,27 @@ class gameLoop {
     ctx.clearRect(0, 0, 600, 600);
 
     // draw mobs
-    instance.updateDraw(instance.mobArray);
+    this.updateDraw(this.mobArray);
 
     // draw bullets
 
     // draw player
-    instance.updateDraw(instance.playerArray);
+    this.updateDraw(this.playerArray);
 
     
     // check time elapsed from frame start
-    instance.frameEnd = performance.now();
-    instance.frameDelta = (instance.frameEnd - instance.frameStart);
-    if (instance.frameDelta < instance.frameTime) {
-      instance.frameWait = (instance.frameTime - instance.frameDelta);
-      //console.log(instance.frameDelta);
-      setTimeout(function () { gameLoop.mainLoop(instance); }, instance.frameWait);
+    this.frameEnd = performance.now();
+    this.frameDelta = (this.frameEnd - this.frameStart);
+    if (this.frameDelta < this.frameTime) {
+      this.frameWait = (this.frameTime - this.frameDelta);
+      //console.log(this.frameDelta);
+      // setTimeout(this.mainLoop, this.frameWait);         // This should work, but...
+      setTimeout(this.mainLoop.bind(this), this.frameWait); // ...we need to do this instead, because JS.
     }
     else {
       console.log('crap');
-      setTimeout(function () { gameLoop.mainLoop(instance); }, 1);
+      // setTimeout(this.mainLoop, 1);          // This should work, but...
+      setTimeout(this.mainLoop.bind(this), 1);  // ...we need to do this shit instead, because JS.
     }
   }
 
