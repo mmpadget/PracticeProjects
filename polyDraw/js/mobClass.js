@@ -36,6 +36,15 @@ class player {
     ctx.fill();
     ctx.stroke();
   }
+  updateBaseVal() {
+    this.cenY = (this.cenY + -.5);
+    if (this.cenY > 630) {
+      this.cenY = -30;
+    }
+    else if (this.cenY < -30) {
+      this.cenY = 630;
+    }
+  }
 }
 
 class mob {

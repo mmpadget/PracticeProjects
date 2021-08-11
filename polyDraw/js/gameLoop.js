@@ -27,6 +27,7 @@ class gameLoop {
     // Check player inputs
 
     // update player position 
+    instance.updatePlayerPosition(instance.playerArray);
 
     // update mob positions
     instance.updatePosition(instance.mobArray);
@@ -72,6 +73,13 @@ class gameLoop {
     for (let i = 0; i < array.length; i++) {
       array[i].updateBaseVal(this.playerArray[0]);
       array[i].updateDeltaToPlayer(this.playerArray[0]);
+      array[i].updateVerts();
+    }
+  }
+
+  updatePlayerPosition (array) {
+    for (let i = 0; i < array.length; i++) {
+      array[i].updateBaseVal();
       array[i].updateVerts();
     }
   }

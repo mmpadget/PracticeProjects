@@ -6,7 +6,7 @@ let player1 = new player();
 console.log(player1);
 player1.updateVerts();
 player1.drawShape();
-let mob1 = new polyMob(['polyMob', 100, 100, 5, 50, false]);
+let mob1 = new polyMob(['polyMob', 150, 100, 5, 50, false]);
 console.log(mob1);
 mob1.updateVerts();
 mob1.updateDeltaToPlayer(player1);
