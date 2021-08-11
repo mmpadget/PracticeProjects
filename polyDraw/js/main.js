@@ -26,5 +26,5 @@ gameLoop1.playerArray.push(player1);
 gameLoop1.mobArray.push(mob1);
 gameLoop1.mobArray.push(mob2);
 gameLoop1.mobArray.push(mob3);
-gameLoop.mainLoop(gameLoop1);
+gameLoop1.mainLoop();
 console.log(gameLoop1);
