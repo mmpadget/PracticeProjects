@@ -26,6 +26,10 @@ class gameLoop {
     this.leftPressed = false;
     this.rightPressed = false;
     this.rightPressed = false;
+
+    this.mainLoop = this.mainLoop.bind(this);
+    this.keyDown = this.keyDown.bind(this);
+    this.keyUp = this.keyUp.bind(this);
   }
 
   mainLoop () {
@@ -73,13 +77,11 @@ class gameLoop {
     if (this.frameDelta < this.frameTime) {
       this.frameWait = (this.frameTime - this.frameDelta);
       //console.log(this.frameDelta);
-      // setTimeout(this.mainLoop, this.frameWait);         // This should work, but...
-      setTimeout(this.mainLoop.bind(this), this.frameWait); // ...we need to do this instead, because JS.
+      setTimeout(this.mainLoop, this.frameWait);
     }
     else {
       console.log('crap');
-      // setTimeout(this.mainLoop, 1);          // This should work, but...
-      setTimeout(this.mainLoop.bind(this), 1);  // ...we need to do this shit instead, because JS.
+      setTimeout(this.mainLoop, 1);
     }
   }
 
