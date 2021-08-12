@@ -11,6 +11,7 @@ class player {
     this.lineCol = 'black';
     this.fillCol = 'grey';
   }
+
   updateVerts() {
     let tempArray = [];
     let halfHeight = 20;
@@ -37,13 +38,14 @@ class player {
     ctx.stroke();
   }
   updateBaseVal() {
-    this.cenY = (this.cenY + -.5);
-    if (this.cenY > 630) {
-      this.cenY = -30;
-    }
-    else if (this.cenY < -30) {
-      this.cenY = 630;
-    }
+    
+    // this.cenY = (this.cenY + -.5);
+    // if (this.cenY > 630) {
+    //   this.cenY = -30;
+    // }
+    // else if (this.cenY < -30) {
+    //   this.cenY = 630;
+    // }
   }
 }
 

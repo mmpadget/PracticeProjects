@@ -22,6 +22,8 @@ mob3.updateVerts();
 mob3.drawShape();
 
 let gameLoop1 = new gameLoop();
+document.addEventListener("keydown", gameLoop1.keyDown);
+document.addEventListener("keyup", gameLoop1.keyUp);
 gameLoop1.playerArray.push(player1);
 gameLoop1.mobArray.push(mob1);
 gameLoop1.mobArray.push(mob2);
