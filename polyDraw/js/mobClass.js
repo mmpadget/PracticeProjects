@@ -5,11 +5,12 @@ let ctx = gameCanvas.getContext("2d");
 class player {
   constructor() {
     this.cenX = 300;
-    this.cenY = 500;
+    this.cenY = 300;
     this.vertArray = [];
     this.invincible = false;
     this.lineCol = 'black';
     this.fillCol = 'grey';
+    this.speed = 3;
   }
 
   updateVerts() {
@@ -37,8 +38,33 @@ class player {
     ctx.fill();
     ctx.stroke();
   }
-  updateBaseVal() {
+  updateBaseVal(pressed) {
+    if (pressed.up == true) {
+      this.cenY = this.cenY - this.speed;
+      if (this.cenY < 20) {
+        this.cenY = 20;
+      }
+    }
+    if (pressed.down == true) {
+      this.cenY = this.cenY + this.speed;
+      if (this.cenY > 580) {
+        this.cenY = 580;
+      }
+    }
+    if (pressed.left == true) {
+      this.cenX = this.cenX - this.speed;
+      if (this.cenX < 10) {
+        this.cenX = 10;
+      }
+    }
+    if (pressed.right == true) {
+      this.cenX = this.cenX + this.speed;
+      if (this.cenX > 590) {
+        this.cenX = 590;
+      }
+    }
     
+
     // this.cenY = (this.cenY + -.5);
     // if (this.cenY > 630) {
     //   this.cenY = -30;
@@ -234,7 +260,7 @@ class squareMob extends mob {
     ctx.strokeStyle = this.lineCol;
   }
   updateBaseVal(player1) {
-    this.cenY = (this.cenY + 1.5);
+    this.cenY = (this.cenY + 1);
     if (this.cenY > 630) {
       this.cenY = -30;
     }

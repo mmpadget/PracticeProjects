@@ -10,22 +10,17 @@ class gameLoop {
     this.frameWait = 0;
     this.fps = 60;
     this.frameTime = 1000 / this.fps;
+
     this.playerArray = [];
     this.mobArray = [];
     this.mobBulletArray = [];
     this.playerBulletArray = [];
     this.backgroundItems = [];
+
     this.level = 1;
     this.wave = 1;
 
     this.pressedKeys = {up: false, down: false, left: false, right: false, space: false, p: false};
-    //this.addEventListener('keydown', keyDown);
-    //this.addEventListener('keyup', keyUp);
-    this.upPressed = false;
-    this.downPressed = false;
-    this.leftPressed = false;
-    this.rightPressed = false;
-    this.rightPressed = false;
   }
 
   mainLoop () {
@@ -37,9 +32,9 @@ class gameLoop {
     // Check player inputs
 
     // update player position 
-    this.updatePlayerPosition(this.playerArray);
-    //player1.updateBaseVal();
-    //player1.updateVerts();
+    //this.updatePlayerPosition(this.playerArray);
+    this.playerArray[0].updateBaseVal(this.pressedKeys);
+    this.playerArray[0].updateVerts();
 
     // update mob positions
     this.updatePosition(this.mobArray);
@@ -64,7 +59,7 @@ class gameLoop {
     // draw bullets
 
     // draw player
-    this.updateDraw(this.playerArray);
+    this.playerArray[0].drawShape();
 
     
     // check time elapsed from frame start
@@ -93,7 +88,7 @@ class gameLoop {
 
   updatePlayerPosition (array) {
     for (let i = 0; i < array.length; i++) {
-      array[i].updateBaseVal();
+      array[i].updateBaseVal(this.pressedKeys);
       array[i].updateVerts();
     }
   }
@@ -107,22 +102,22 @@ class gameLoop {
   keyDown(event) {              
     //up
     if (event.keyCode == 38) {
-      this.pressedKeys.up = true;  //this line doesn't work
+      this.pressedKeys.up = true;
       console.log('up');
     }
     //down
     if (event.keyCode == 40) {
-      this.downPressed = true;  //as opposed to this one
+      this.pressedKeys.down = true;
       console.log('down');
     }
     //left
     if (event.keyCode == 37) {
-      this.leftPressed = true;
+      this.pressedKeys.left = true;
       console.log('left');
     }
     //right
     if (event.keyCode == 39) {
-      this.rightPressed = true;
+      this.pressedKeys.right = true;
       console.log('right');
     }
   }
@@ -130,24 +125,24 @@ class gameLoop {
   keyUp(event) {
     //up
     if (event.keyCode == 38) {
-      this.pressedKeys.up = false;   //this line doesn't work
+      this.pressedKeys.up = false;
       console.log('!');
     }
   
     //down
     if (event.keyCode == 40) {
-      this.downPressed = false;   //as opposed to this one
+      this.pressedKeys.down = false;
       console.log('!');
     }
     //left
     if (event.keyCode == 37) {
-      this.leftPressed = false;
+      this.pressedKeys.left = false;
       console.log('!');
     }
   
     //right
     if (event.keyCode == 39) {
-      this.rightPressed = false;
+      this.pressedKeys.right = false;
       console.log('!');
     }
   }

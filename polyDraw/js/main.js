@@ -16,14 +16,14 @@ let mob2 = new starMob(['starMob', 200, 200, 5, 30, false]);
 console.log(mob2);
 mob2.updateVerts();
 mob2.drawShape();
-let mob3 = new squareMob(['squareMob', 500, 300, 10, 30, true]);
+let mob3 = new squareMob(['squareMob', 300, 300, 10, 30, true]);
 console.log(mob3);
 mob3.updateVerts();
 mob3.drawShape();
 
 let gameLoop1 = new gameLoop();
-document.addEventListener("keydown", gameLoop1.keyDown);
-document.addEventListener("keyup", gameLoop1.keyUp);
+document.addEventListener("keydown", gameLoop1.keyDown.bind(gameLoop1));
+document.addEventListener("keyup", gameLoop1.keyUp.bind(gameLoop1));
 gameLoop1.playerArray.push(player1);
 gameLoop1.mobArray.push(mob1);
 gameLoop1.mobArray.push(mob2);
