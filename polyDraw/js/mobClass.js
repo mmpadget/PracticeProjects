@@ -83,6 +83,7 @@ class mob {
     this.genus = array[3]; //number of sides or hits object can take
     this.movesIn = array[4]; //frames to wait before movement
     this.shoots = array[5];
+    this.zStack = array[6];
     this.vertArray = [];
     this.theta = 0;
     this.thetaToPlayer = 0; //angle from cenX,cenY to player center
