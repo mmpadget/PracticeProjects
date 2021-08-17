@@ -1,6 +1,6 @@
 export { gameLoop, };
 import { levelData } from "./mobInfo.js";
-import { player, mob, polyMob, starMob, squareMob, splitter, butFly, teleport, tether } from "./mobClass.js";
+import { player, mob, polyMob, starMob, squareMob, splitter, butFly, teleport, tether, bullet } from "./mobClass.js";
 
 let ctx = gameCanvas.getContext("2d");
 
@@ -30,8 +30,9 @@ class gameLoop {
 
     this.pressedKeys = {up: false, down: false, left: false, right: false, space: false, p: false};
     
-    this.mainLoop = this.mainLoop.bind(this);
+    //this.bulletTest = new bullet(300, 300, Math.PI/2 * 3);
 
+    this.mainLoop = this.mainLoop.bind(this);
     document.addEventListener("keydown", this.keyDown.bind(this));
     document.addEventListener("keyup", this.keyUp.bind(this));
 
@@ -49,14 +50,15 @@ class gameLoop {
     // Check player inputs
 
     // update player position 
-    this.player.updateBaseVal(this.pressedKeys);
+    this.player.updateBaseVal(this.pressedKeys, this.playerBulletArray);
     this.player.updateVerts();
+    
 
     // update mob positions
     this.updatePosition(this.mobArray);
 
     // update bullet positions
-
+    this.updateBulletPositions(this.playerBulletArray);
     // check mob bullets against player
       // resolve hits and setup for next frame
 
@@ -68,11 +70,19 @@ class gameLoop {
     
     // clear canvas
     ctx.clearRect(0, 0, 600, 600);
+    
+    // draw background
+
+    // draw background flair
+
+    // draw shadows
 
     // draw mobs
     this.updateDraw(this.mobArray);
 
     // draw bullets
+    this.drawBulletFromArray(this.playerBulletArray);
+    //this.bulletTest.drawBullet();
 
     // draw player
     this.player.drawShape();
@@ -106,7 +116,24 @@ class gameLoop {
     }
   }
 
-  keyDown(event) {              
+  updateBulletPositions(array) {
+    if (array.length > 0) {
+      for (let i = 0; i < array.length; i++) {
+        array[i].updateBaseVal();
+        array[i].updateVerts();
+      }
+    }
+  }
+
+  drawBulletFromArray(array) {
+    if (array.length > 0) {
+      for (let i = 0; i < array.length; i++) {
+        array[i].drawBullet();
+      }
+    }
+  }
+
+  keyDown(event) {
     //up
     if (event.keyCode == 38) {
       this.pressedKeys.up = true;
@@ -136,6 +163,11 @@ class gameLoop {
       this.pressedKeys.space = true;
       console.log('space');
     }
+    //p key
+    if (event.keyCode == 80) {
+      this.pressedKeys.space = true;
+      console.log('p');
+    }
   }
   
   keyUp(event) {
@@ -163,6 +195,11 @@ class gameLoop {
     if (event.keyCode == 32) {
       this.pressedKeys.space = false;
       console.log('!');
+    }
+    //p key
+    if (event.keyCode == 80) {
+      this.pressedKeys.space = false;
+      console.log('!');
       this.mobPopper();
     }
   }
@@ -173,51 +210,80 @@ class gameLoop {
     //console.log(this.mobArray);
   }
 
-  mobLoader() {           //get rid of ondeck?  
-    if (this.levelStart == true) {   //generalize levelStart
+  mobLoader() {
+    if (this.levelStart == true) {
       let tempArray = [];
       for (let i = 0; i < this.levelData['level_' + this.level].wave1.length; i++) {
         let array = this.levelData['level_' + this.level].wave1[i];
         tempArray.push(this.mobFactory(array));
       }
       this.mobArray = tempArray;
-      this.mobArray.sort((a, b) => a.zStack - b.zStack);
-
-      tempArray = [];
-      for (let i = 0; i < this.levelData['level_' + this.level].wave2.length; i++) {
-        let array = this.levelData['level_' + this.level].wave2[i];
-        tempArray.push(this.mobFactory(array));
-      }
-      this.mobsOnDeck = tempArray;
       this.levelStart = false;
-      console.log(this.wave);
-    }
-    if (this.mobArray.length < 4 && this.wave < (this.numWaves -1)) { //says wave 1
-      this.wave++;  //says 2 load 3 into ondeck
-      this.mobArray = this.mobArray.concat(this.mobsOnDeck);
       this.mobArray.sort((a, b) => a.zStack - b.zStack);
-      this.mobsOnDeck = [];
+    }
 
+    if (this.mobArray.length < 4 && this.wave <= (this.numWaves -1)) { //wave = last wave loaded
+      this.wave++;  //wave = wave to be loaded
       let tempArray = [];
-      let onDeckWave = this.wave + 1;
-      for (let i = 0; i < this.levelData['level_' + this.level]['wave' + onDeckWave].length; i++) {
-        let array = this.levelData['level_' + this.level]['wave' + onDeckWave][i];
+      for (let i = 0; i < this.levelData['level_' + this.level]['wave' + this.wave].length; i++) {
+        let array = this.levelData['level_' + this.level]['wave' + this.wave][i];
         tempArray.push(this.mobFactory(array));
       }
-      this.mobsOnDeck = tempArray;
-      console.log(this.wave);
-    }
-    if (this.mobArray.length < 4 && this.wave == (this.numWaves - 1)) {
-      this.wave++;
-      this.mobArray = this.mobArray.concat(this.mobsOnDeck);
+      this.mobArray = this.mobArray.concat(tempArray);
       this.mobArray.sort((a, b) => a.zStack - b.zStack);
-      this.mobsOnDeck = [];
       console.log(this.wave);
     }
+
     if (this.mobArray.length == 0 && this.wave == this.numWaves){
       console.log('So, so, so good!!!');
     }
   }
+
+  // mobLoader() {           //get rid of ondeck?  
+  //   if (this.levelStart == true) {   //generalize levelStart
+  //     let tempArray = [];
+  //     for (let i = 0; i < this.levelData['level_' + this.level].wave1.length; i++) {
+  //       let array = this.levelData['level_' + this.level].wave1[i];
+  //       tempArray.push(this.mobFactory(array));
+  //     }
+  //     this.mobArray = tempArray;
+  //     this.mobArray.sort((a, b) => a.zStack - b.zStack);
+
+  //     tempArray = [];
+  //     for (let i = 0; i < this.levelData['level_' + this.level].wave2.length; i++) {
+  //       let array = this.levelData['level_' + this.level].wave2[i];
+  //       tempArray.push(this.mobFactory(array));
+  //     }
+  //     this.mobsOnDeck = tempArray;
+  //     this.levelStart = false;
+  //     console.log(this.wave);
+  //   }
+  //   if (this.mobArray.length < 4 && this.wave < (this.numWaves -1)) { //says wave 1
+  //     this.wave++;  //says 2 load 3 into ondeck
+  //     this.mobArray = this.mobArray.concat(this.mobsOnDeck);
+  //     this.mobArray.sort((a, b) => a.zStack - b.zStack);
+  //     this.mobsOnDeck = [];
+
+  //     let tempArray = [];
+  //     let onDeckWave = this.wave + 1;
+  //     for (let i = 0; i < this.levelData['level_' + this.level]['wave' + onDeckWave].length; i++) {
+  //       let array = this.levelData['level_' + this.level]['wave' + onDeckWave][i];
+  //       tempArray.push(this.mobFactory(array));
+  //     }
+  //     this.mobsOnDeck = tempArray;
+  //     console.log(this.wave);
+  //   }
+  //   if (this.mobArray.length < 4 && this.wave == (this.numWaves - 1)) {
+  //     this.wave++;
+  //     this.mobArray = this.mobArray.concat(this.mobsOnDeck);
+  //     this.mobArray.sort((a, b) => a.zStack - b.zStack);
+  //     this.mobsOnDeck = [];
+  //     console.log(this.wave);
+  //   }
+  //   if (this.mobArray.length == 0 && this.wave == this.numWaves){
+  //     console.log('So, so, so good!!!');
+  //   }
+  // }
 
   mobFactory (array) {
     let mob
