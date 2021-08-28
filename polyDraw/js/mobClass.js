@@ -1,4 +1,4 @@
-export { player, mob, polyMob, starMob, squareMob, splitter, butFly, teleport, tether, bullet };
+export { player, mob, polyMob, starMob, squareMob, splitter, butFly, teleport, tether, bullet, bulletUp, bulletDown, bulletAngle };
 
 let ctx = gameCanvas.getContext("2d");
 
@@ -9,37 +9,12 @@ class player {
     this.vertArray = [];
     this.invincible = false;
     this.lineCol = 'black';
-    this.fillCol = 'grey';
+    this.fillCol = 'rgba(255, 165, 0, 1)';
     this.speed = 3;
     this.bulletTimer = 0;
     this.bulletTimerMax = 30;
   }
 
-  updateVerts() {
-    let tempArray = [];
-    let halfHeight = 20;
-    let halfWidth = 10;
-
-    tempArray.push({x: this.cenX, y: (this.cenY - halfHeight)});
-    tempArray.push({x: (this.cenX + halfWidth), y: this.cenY});
-    tempArray.push({x: this.cenX, y: (this.cenY + halfHeight)});
-    tempArray.push({x: (this.cenX - halfWidth), y: this.cenY});
-
-    this.vertArray = tempArray;
-  }
-  drawShape() {
-    ctx.beginPath();
-    ctx.lineJoin = 'round';
-    ctx.strokeStyle = this.lineCol;
-    ctx.fillStyle = this.fillCol;
-    ctx.lineWidth = 3;
-    for (let i = 0; i < this.vertArray.length; i++){
-      ctx.lineTo(this.vertArray[i].x, this.vertArray[i].y);
-      }
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-  }
   updateBaseVal(pressed, destArray) {
     if (this.bulletTimer == (this.bulletTimerMax -1)) {
       this.bulletTimer = 0;
@@ -48,7 +23,7 @@ class player {
       this.bulletTimer++;
     }
     if (this.bulletTimer == 0 && pressed.space == true) {
-      let tempBul = new bullet(this.cenX, this.cenY -23, Math.PI/2 * 3);
+      let tempBul = new bulletUp(this.cenX, this.cenY -18, Math.PI/2 * 3);
       destArray.push(tempBul);
       this.bulletTimer++;
     }
@@ -78,6 +53,32 @@ class player {
       }
     }
   }
+
+  updateVerts() {
+    let tempArray = [];
+    let halfHeight = 20;
+    let halfWidth = 10;
+
+    tempArray.push({x: this.cenX, y: (this.cenY - halfHeight)});
+    tempArray.push({x: (this.cenX + halfWidth), y: this.cenY});
+    tempArray.push({x: this.cenX, y: (this.cenY + halfHeight)});
+    tempArray.push({x: (this.cenX - halfWidth), y: this.cenY});
+
+    this.vertArray = tempArray;
+  }
+  drawShape() {
+    ctx.beginPath();
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = this.lineCol;
+    ctx.fillStyle = this.fillCol;
+    ctx.lineWidth = 3;
+    for (let i = 0; i < this.vertArray.length; i++){
+      ctx.lineTo(this.vertArray[i].x, this.vertArray[i].y);
+      }
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  }
 }
 
 class mob {
@@ -89,6 +90,7 @@ class mob {
     this.movesIn = array[4]; //frames to wait before movement
     this.shoots = array[5];
     this.zStack = array[6];
+    this.speed = array[7];
     this.vertArray = [];
     this.theta = 0;
     this.thetaToPlayer = 0; //angle from cenX,cenY to player center
@@ -96,6 +98,9 @@ class mob {
     this.deltaYToPlayer = 0;
     this.fullCirc = Math.PI * 2; // 360 degrees expressed in radians
     this.tic = Math.PI / 720; // One tic = 1/4 degree expressed in radians
+    this.alphaVal = 1;
+    this.path = 0
+    this.eliminate = false;
   }
 
   updateDeltaToPlayer(player1) {
@@ -114,6 +119,19 @@ class polyMob extends mob {
     this.rotSpeed = 4;
   }
 
+  updateBaseVal() {
+   // this.cenX = (Math.cos(this.theta) * 2) + this.cenX;
+    this.cenY = (this.cenY + this.speed);
+    if (this.cenY > 630) {
+      this.cenY = -30;
+    }
+    this.theta = this.theta + (this.rotDir * this.tic * this.rotSpeed);
+    if (Math.abs(this.theta) > this.fullCirc) {
+      this.theta = this.theta % this.fullCirc;
+    }
+    //console.log(this.theta);
+  }
+
   updateVerts() {
     let tempArray = [];
     let arcSeg = this.fullCirc/this.genus;
@@ -126,6 +144,7 @@ class polyMob extends mob {
     }
     this.vertArray = tempArray;
   }
+
   drawShape() {
     ctx.beginPath();
     ctx.lineJoin = 'round';
@@ -139,9 +158,20 @@ class polyMob extends mob {
     ctx.fill();
     ctx.stroke();
   }
+}
+
+class starMob extends mob {
+  constructor(array) {
+    super(array);
+    this.lineCol = 'rgba(41, 154, 230, 1)';
+    this.fillCol = 'rgba(52, 244, 253, 1)';
+    this.radius = 20;
+    this.rotDir = Math.floor(Math.random() * 2); if (this.rotDir == 0) {this.rotDir = -1};  //0 = no rotation, 1 = clockwise, -1 = counterclock
+    this.rotSpeed = 10;
+  }
+
   updateBaseVal() {
-    //this.cenX = (Math.cos(this.theta) * 1.5) + this.cenX;
-    this.cenY = (this.cenY + 2);
+    this.cenY = (this.cenY + this.speed);
     if (this.cenY > 630) {
       this.cenY = -30;
     }
@@ -149,28 +179,19 @@ class polyMob extends mob {
     if (Math.abs(this.theta) > this.fullCirc) {
       this.theta = this.theta % this.fullCirc;
     }
-    //console.log(this.theta);
   }
-}
 
-class starMob extends mob {
-  constructor(array) {
-    super(array);
-    this.lineCol = 'blue';
-    this.fillCol = 'green';
-    this.radius = 20;
-  }
   updateVerts() {
     let tempArray = [];
     let arcSeg = this.fullCirc/this.genus;
     let halfSeg = arcSeg/2;
     let xVal, yVal;
     for (let i = 0; i < this.genus; i++) {
-      xVal = Math.round(Math.cos(arcSeg * i) * this.radius + this.cenX);
-      yVal = Math.round(Math.sin(arcSeg * i) * this.radius + this.cenY);
+      xVal = Math.round(Math.cos(this.theta + (arcSeg * i)) * this.radius + this.cenX);
+      yVal = Math.round(Math.sin(this.theta + (arcSeg * i)) * this.radius + this.cenY);
       tempArray.push({x: xVal, y: yVal});
-      xVal = Math.round(Math.cos((arcSeg * i) + halfSeg) * (this.radius * .6) + this.cenX);
-      yVal = Math.round(Math.sin((arcSeg * i) + halfSeg) * (this.radius * .6) + this.cenY);
+      xVal = Math.round(Math.cos((this.theta + (arcSeg * i)) + halfSeg) * (this.radius * .6) + this.cenX);
+      yVal = Math.round(Math.sin((this.theta + (arcSeg * i)) + halfSeg) * (this.radius * .6) + this.cenY);
       tempArray.push({x: xVal, y: yVal});
     }
     this.vertArray = tempArray;
@@ -188,22 +209,31 @@ class starMob extends mob {
     ctx.fill();
     ctx.stroke();
   }
-  updateBaseVal() {
-    this.cenY = (this.cenY + .5);
-    if (this.cenY > 630) {
-      this.cenY = -30;
-    }
-  }
 }
   
 class squareMob extends mob {
   constructor(array) {
     super(array);
-    this.lineCol = 'blue';
-    this.fillCol = 'green';
+    this.lineCol = 'rgba(192, 27, 208, 1)';
+    this.fillCol = 'rgba(250, 65, 252, 1)';
     this.vertArray2 = [];
     this.vertArray3 = [];
   }
+
+  updateBaseVal(player1) {
+    this.cenY = (this.cenY + this.speed);
+    if (this.cenY > 630) {
+      this.cenY = -30;
+    }
+
+    let dx = (player1.cenX - this.cenX);
+    let dy = (player1.cenY - this.cenY);
+    this.thetaToPlayer = Math.atan2(dy, dx);
+    if (this.thetaToPlayer < 0) {
+      this.thetaToPlayer = ((Math.PI + this.thetaToPlayer) + Math.PI);
+    }
+  }
+
   updateVerts() {
     let tempArray = [];
     let tempArray2 = [];
@@ -231,8 +261,8 @@ class squareMob extends mob {
     this.vertArray2 = tempArray2;
     //draw gun
     tempArray3.push({x: this.cenX, y: this.cenY});
-    xVal = Math.round(Math.cos(this.thetaToPlayer) * 60 + this.cenX);
-    yVal =Math.round(Math.sin(this.thetaToPlayer) * 60 + this.cenY);
+    xVal = Math.round(Math.cos(this.thetaToPlayer) * 30 + this.cenX);
+    yVal =Math.round(Math.sin(this.thetaToPlayer) * 30 + this.cenY);
     tempArray3.push({x: xVal, y: yVal});
     this.vertArray3 = tempArray3;
   }
@@ -259,36 +289,28 @@ class squareMob extends mob {
     ctx.stroke();
     //draw gun
     ctx.beginPath();
+    ctx.strokeStyle = 'black';
+    ctx.fillStyle = 'black';
+    ctx.arc(this.vertArray3[0].x, this.vertArray3[0].y, 7, 0, Math.PI * 2, false);
+    ctx.fill();
     ctx.moveTo(this.vertArray3[0].x, this.vertArray3[0].y);
     ctx.lineTo(this.vertArray3[1].x, this.vertArray3[1].y);
-    ctx.strokeStyle = 'black';
+    
+    ctx.lineWidth = 8;
     ctx.stroke();
     ctx.strokeStyle = this.lineCol;
   }
-  updateBaseVal(player1) {
-    this.cenY = (this.cenY + 1);
-    if (this.cenY > 630) {
-      this.cenY = -30;
-    }
-
-    let dx = (player1.cenX - this.cenX);
-    let dy = (player1.cenY - this.cenY);
-    this.thetaToPlayer = Math.atan2(dy, dx);
-    if (this.thetaToPlayer < 0) {
-      this.thetaToPlayer = ((Math.PI + this.thetaToPlayer) + Math.PI);
-    }
-  }
 }
 
-class splitter {
+class splitter extends mob {
   
 }
 
-class butFly {
+class butFly extends mob {
   
 }
 
-class teleport {
+class teleport extends mob {
   
 }
 
@@ -306,28 +328,25 @@ class bullet {
     this.speed = 6;
     this.length = 18;
 
-    console.log(this.theta);
-    console.log(Math.cos(this.theta));
-    console.log(Math.sin(this.theta));
-
-    
-    this.deltaTailX = (Math.cos(this.theta) * this.length * -1);
-    this.deltaTailY = (Math.sin(this.theta) * this.length * -1);
-
-    console.log('cenX cenY tailX tailY');
-    console.log(this.cenX);
-    console.log(this.cenY);
-    console.log(this.deltaTailX);
-    console.log(this.deltaTailY);
-    this.deltaX = (Math.cos(this.theta) * this.speed);
-    this.deltaY = (Math.sin(this.theta) * this.speed);
     this.frames = 0;
-    this.remove = false;
-    
+    this.eliminate = false;
+  }
+
+  updateBaseVal() {
+    this.cenX += this.deltaX;
+    this.cenY += this.deltaY;
+    if (this.cenX < -15 || this.cenX > 615 || this.cenY < -15 || this.cenY > 615) {
+      this.eliminate = true;
+      console.log('boom!');
+    }
   }
 
   updateVerts() {
     let tempArray = [];
+
+    // if (collision) {
+    //   this.frames++;
+    // }
 
     switch (this.frames) {
       case 0:
@@ -363,25 +382,47 @@ class bullet {
     ctx.closePath();
     ctx.stroke();
 
-    ctx.beginPath();
     ctx.strokeStyle = 'yellow';
     ctx.lineWidth = 3;
-    ctx.moveTo(this.vertArray[0].x, this.vertArray[0].y);
-    ctx.lineTo(this.vertArray[1].x, this.vertArray[1].y);
-    ctx.closePath();
     ctx.stroke();
 
-    ctx.beginPath();
     ctx.strokeStyle = 'white';
     ctx.lineWidth = 2;
-    ctx.moveTo(this.vertArray[0].x, this.vertArray[0].y);
-    ctx.lineTo(this.vertArray[1].x, this.vertArray[1].y);
-    ctx.closePath();
     ctx.stroke();
   }
+}
 
-  updateBaseVal() {
-    this.cenX += this.deltaX;
-    this.cenY += this.deltaY;
+class bulletUp extends bullet {
+  constructor(x, y, angle) {
+    super(x, y, angle);
+
+    this.deltaTailX = 0;
+    this.deltaTailY = this.length * -1;
+
+    this.deltaX = 0;
+    this.deltaY = this.speed * -1;
+  }
+}
+
+class bulletDown extends bullet {
+  constructor(x, y, angle) {
+    super(x, y, angle);
+
+    this.deltaTailX = 0;
+    this.deltaTailY = this.length;
+
+    this.deltaX = 0;
+    this.deltaY = this.speed;
+  }
+}
+class bulletAngle extends bullet {
+  constructor(x, y, angle) {
+    super(x, y, angle);
+
+    this.deltaTailX = (Math.cos(this.theta) * this.length * -1);
+    this.deltaTailY = (Math.sin(this.theta) * this.length * -1);
+
+    this.deltaX = (Math.cos(this.theta) * this.speed);
+    this.deltaY = (Math.sin(this.theta) * this.speed);
   }
 }
