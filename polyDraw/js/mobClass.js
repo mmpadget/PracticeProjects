@@ -59,10 +59,29 @@ class player {
     let halfHeight = 20;
     let halfWidth = 10;
 
-    tempArray.push({x: this.cenX, y: (this.cenY - halfHeight)});
-    tempArray.push({x: (this.cenX + halfWidth), y: this.cenY});
-    tempArray.push({x: this.cenX, y: (this.cenY + halfHeight)});
-    tempArray.push({x: (this.cenX - halfWidth), y: this.cenY});
+    tempArray.push({x: this.cenX, y: (this.cenY - 26)});
+    tempArray.push({x: (this.cenX + 8), y: (this.cenY - 10)});
+    tempArray.push({x: (this.cenX + 5), y: (this.cenY - 4)});
+    tempArray.push({x: (this.cenX + 10), y: (this.cenY - 2)});
+    tempArray.push({x: (this.cenX + 12), y: (this.cenY - 6)});
+    tempArray.push({x: (this.cenX + 16), y: (this.cenY - 6)});
+    tempArray.push({x: (this.cenX + 18), y: (this.cenY - 2)});
+    tempArray.push({x: (this.cenX + 17), y: (this.cenY + 2)});
+    tempArray.push({x: (this.cenX + 23), y: (this.cenY + 10)});
+    tempArray.push({x: (this.cenX + 14), y: (this.cenY + 24)});
+    tempArray.push({x: (this.cenX + 6), y: (this.cenY + 26)});
+    tempArray.push({x: this.cenX, y: (this.cenY + 22)});
+
+    tempArray.push({x: (this.cenX - 6), y: (this.cenY + 26)});
+    tempArray.push({x: (this.cenX - 14), y: (this.cenY + 24)});
+    tempArray.push({x: (this.cenX - 23), y: (this.cenY + 10)});
+    tempArray.push({x: (this.cenX - 17), y: (this.cenY + 2)});
+    tempArray.push({x: (this.cenX - 18), y: (this.cenY - 2)});
+    tempArray.push({x: (this.cenX - 16), y: (this.cenY - 6)});
+    tempArray.push({x: (this.cenX - 12), y: (this.cenY - 6)});
+    tempArray.push({x: (this.cenX - 10), y: (this.cenY - 2)});
+    tempArray.push({x: (this.cenX - 5), y: (this.cenY - 4)});
+    tempArray.push({x: (this.cenX - 8), y: (this.cenY - 10)});
 
     this.vertArray = tempArray;
   }
@@ -71,13 +90,22 @@ class player {
     ctx.lineJoin = 'round';
     ctx.strokeStyle = this.lineCol;
     ctx.fillStyle = this.fillCol;
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 1;
     for (let i = 0; i < this.vertArray.length; i++){
       ctx.lineTo(this.vertArray[i].x, this.vertArray[i].y);
       }
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
+    ctx.lineTo(this.cenX + 8, this.cenY - 10);
+    ctx.lineTo(this.cenX, this.cenY + 8);
+    ctx.lineTo(this.cenX - 8, this.cenY - 10);
+    ctx.moveTo(this.cenX + 10, this.cenY - 2);
+    ctx.lineTo(this.cenX + 14, this.cenY + 18);
+    ctx.lineTo(this.cenX + 18, this.cenY - 2);
+
+    ctx.stroke();
+
   }
 }
 
@@ -223,7 +251,7 @@ class squareMob extends mob {
   updateBaseVal(player1) {
     this.cenY = (this.cenY + this.speed);
     if (this.cenY > 630) {
-      this.cenY = -30;
+      this.cenY = -60;
     }
 
     let dx = (player1.cenX - this.cenX);
@@ -261,8 +289,8 @@ class squareMob extends mob {
     this.vertArray2 = tempArray2;
     //draw gun
     tempArray3.push({x: this.cenX, y: this.cenY});
-    xVal = Math.round(Math.cos(this.thetaToPlayer) * 30 + this.cenX);
-    yVal =Math.round(Math.sin(this.thetaToPlayer) * 30 + this.cenY);
+    xVal = Math.round(Math.cos(this.thetaToPlayer) * 25 + this.cenX);
+    yVal =Math.round(Math.sin(this.thetaToPlayer) * 25 + this.cenY);
     tempArray3.push({x: xVal, y: yVal});
     this.vertArray3 = tempArray3;
   }

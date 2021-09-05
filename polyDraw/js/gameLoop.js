@@ -77,6 +77,8 @@ class gameLoop {
     // draw background flair
 
     // draw shadows
+    //this.drawShadow(this.player);
+    this.drawShadow(this.mobArray);
 
     // draw mobs
     this.updateDraw(this.mobArray);
@@ -270,6 +272,28 @@ class gameLoop {
       case 'squareMob':
         mob = new squareMob(array);
         return mob;
+    }
+  }
+
+  drawShadow(array) {
+    if (array.length > 0) {
+      ctx.translate(20, 20);
+      //ctx.filter = 'blur(4px)';
+      for (let i = 0; i < array.length; i++) {
+        ctx.beginPath();
+        ctx.lineJoin = 'round';
+        ctx.strokeStyle = 'rgba(100, 100, 100, .4)';
+        ctx.fillStyle = 'rgba(100, 100, 100, .4)';
+        ctx.lineWidth = 3;
+        for (let j = 0; j < array[i].vertArray.length; j++) {
+          ctx.lineTo(array[i].vertArray[j].x, array[i].vertArray[j].y)
+        }
+        ctx.closePath();
+        ctx.fill();
+        //ctx.stroke();
+      }
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.filter = 'none';
     }
   }
 }

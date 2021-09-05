@@ -16,11 +16,11 @@ class levelData {
       ],
       wave2: [
         ['polyMob', 150, 100, 5, 50, false, 2, 1.75],
-        ['polyMob', 200, 100, 5, 50, false, 2, 1.75],
+        ['polyMob', 200, 100, 7, 50, false, 2, 1.75],
         ['polyMob', 250, 100, 5, 50, false, 2, 1.75],
-        ['polyMob', 300, 100, 5, 50, false, 2, 1.75],
+        ['polyMob', 300, 100, 6, 50, false, 2, 1.75],
         ['polyMob', 350, 100, 5, 50, false, 2, 1.75],
-        ['polyMob', 400, 100, 5, 50, false, 2, 1.75],
+        ['polyMob', 400, 100, 4, 50, false, 2, 1.75],
         ['polyMob', 450, 100, 5, 50, false, 2, 1.75],
         ['squareMob', 300, 300, 10, 30, true, 1, 1]
       ],
