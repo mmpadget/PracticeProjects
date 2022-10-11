@@ -7,15 +7,20 @@ class player {
     this.cenX = 300;
     this.cenY = 300;
     this.vertArray = [];
-    this.invincible = false;
+    this.invincible = 0; // number of frames untill can be hit
     this.lineCol = 'black';
     this.fillCol = 'rgba(255, 165, 0, 1)';
-    this.speed = 3;
+    this.speed = 3.5;
     this.bulletTimer = 0;
     this.bulletTimerMax = 30;
+    this.genus = 13;
+    this.hitTestOffset = 20 + 3;
   }
 
-  updateBaseVal(pressed, destArray) {
+  updateBaseVal(pressed, destArray, leftRightKeys, upDownKeys) {
+    if (this.invincible > 0) {
+      this.invincible--;
+    }
     if (this.bulletTimer == (this.bulletTimerMax -1)) {
       this.bulletTimer = 0;
     }
@@ -28,30 +33,56 @@ class player {
       this.bulletTimer++;
     }
     
-    if (pressed.up == true) {
-      this.cenY = this.cenY - this.speed;
-      if (this.cenY < 20) {
-        this.cenY = 20;
-      }
+    if (leftRightKeys[0] && upDownKeys[0]) {
+      this.cenX += (this.speed * leftRightKeys[0] * .7);
+      this.cenY += (this.speed * upDownKeys[0] * .7);
     }
-    if (pressed.down == true) {
-      this.cenY = this.cenY + this.speed;
-      if (this.cenY > 580) {
-        this.cenY = 580;
-      }
+
+    if (leftRightKeys[0] && !(upDownKeys[0])) {
+      this.cenX += (this.speed * leftRightKeys[0]);
     }
-    if (pressed.left == true) {
-      this.cenX = this.cenX - this.speed;
-      if (this.cenX < 10) {
-        this.cenX = 10;
-      }
+
+    if (!(leftRightKeys[0]) && upDownKeys[0]) {
+      this.cenY += (this.speed * upDownKeys[0]);
     }
-    if (pressed.right == true) {
-      this.cenX = this.cenX + this.speed;
-      if (this.cenX > 590) {
-        this.cenX = 590;
-      }
+
+    if (this.cenX < 10) {
+      this.cenX = 10;
     }
+    if (this.cenX > 590) {
+      this.cenX = 590;
+    }
+    if (this.cenY < 10) {
+      this.cenY = 10;
+    }
+    if (this.cenY > 590) {
+      this.cenY = 590;
+    }
+
+    // if (pressed.up == true) {
+    //   this.cenY = this.cenY - this.speed;
+    //   if (this.cenY < 20) {
+    //     this.cenY = 20;
+    //   }
+    // }
+    // if (pressed.down == true) {
+    //   this.cenY = this.cenY + this.speed;
+    //   if (this.cenY > 580) {
+    //     this.cenY = 580;
+    //   }
+    // }
+    // if (pressed.left == true) {
+    //   this.cenX = this.cenX - this.speed;
+    //   if (this.cenX < 10) {
+    //     this.cenX = 10;
+    //   }
+    // }
+    // if (pressed.right == true) {
+    //   this.cenX = this.cenX + this.speed;
+    //   if (this.cenX > 590) {
+    //     this.cenX = 590;
+    //   }
+    // }
   }
 
   updateVerts() {
@@ -119,6 +150,7 @@ class mob {
     this.shoots = array[5];
     this.zStack = array[6];
     this.speed = array[7];
+    this.invincible = 0;
     this.vertArray = [];
     this.theta = 0;
     this.thetaToPlayer = 0; //angle from cenX,cenY to player center
@@ -131,9 +163,9 @@ class mob {
     this.eliminate = false;
   }
 
-  updateDeltaToPlayer(player1) {
-    this.deltaXToPlayer = Math.abs(this.cenX - player1.cenX);
-    this.deltaYToPlayer = Math.abs(this.cenY - player1.cenY);
+  updateDeltaToPlayer(player) {
+    this.deltaXToPlayer = Math.abs(this.cenX - player.cenX);
+    this.deltaYToPlayer = Math.abs(this.cenY - player.cenY);
   }
 }
 
@@ -145,10 +177,14 @@ class polyMob extends mob {
     this.radius = 20;
     this.rotDir = Math.floor(Math.random() * 2); if (this.rotDir == 0) {this.rotDir = -1};  //0 = no rotation, 1 = clockwise, -1 = counterclock
     this.rotSpeed = 4;
+    this.hitTestOffset = this.radius + 3;
   }
 
   updateBaseVal() {
-   // this.cenX = (Math.cos(this.theta) * 2) + this.cenX;
+    if (this.invincible > 0) {
+      this.invincible--;
+    }
+    this.cenX = (Math.cos(this.theta) * 2) + this.cenX;
     this.cenY = (this.cenY + this.speed);
     if (this.cenY > 630) {
       this.cenY = -30;
@@ -196,9 +232,13 @@ class starMob extends mob {
     this.radius = 20;
     this.rotDir = Math.floor(Math.random() * 2); if (this.rotDir == 0) {this.rotDir = -1};  //0 = no rotation, 1 = clockwise, -1 = counterclock
     this.rotSpeed = 10;
+    this.hitTestOffset = this.radius + 3;
   }
 
   updateBaseVal() {
+    if (this.invincible > 0) {
+      this.invincible--;
+    }
     this.cenY = (this.cenY + this.speed);
     if (this.cenY > 630) {
       this.cenY = -30;
@@ -242,13 +282,20 @@ class starMob extends mob {
 class squareMob extends mob {
   constructor(array) {
     super(array);
-    this.lineCol = 'rgba(192, 27, 208, 1)';
-    this.fillCol = 'rgba(250, 65, 252, 1)';
+    this.lineCol = 'rgba(88, 19, 191, 1)';
+    this.fillCol = 'rgba(161, 65, 152, 1)';
     this.vertArray2 = [];
     this.vertArray3 = [];
+    this.bulletTimer = Math.floor(Math.random() * 45);
+    this.bulletTimerMax = 110;
+    this.hitTestOffset = 34 + 3;
   }
 
-  updateBaseVal(player1) {
+  updateBaseVal(player1, bulletDestinationArray) {
+    if (this.invincible > 0) {
+      this.invincible--;
+    }
+
     this.cenY = (this.cenY + this.speed);
     if (this.cenY > 630) {
       this.cenY = -60;
@@ -259,6 +306,17 @@ class squareMob extends mob {
     this.thetaToPlayer = Math.atan2(dy, dx);
     if (this.thetaToPlayer < 0) {
       this.thetaToPlayer = ((Math.PI + this.thetaToPlayer) + Math.PI);
+    }
+
+    if (this.bulletTimer == this.bulletTimerMax) {
+      let tempX =Math.round(Math.cos(this.thetaToPlayer) * 25 + this.cenX);
+      let tempY =Math.round(Math.sin(this.thetaToPlayer) * 25 + this.cenY);
+      let tempBul = new bulletAngle(tempX, tempY, this.thetaToPlayer);
+      bulletDestinationArray.push(tempBul);
+    }
+    this.bulletTimer++;
+    if (this.bulletTimer > this.bulletTimerMax) {
+      this.bulletTimer = Math.floor(Math.random() * 30);
     }
   }
 
@@ -357,7 +415,10 @@ class bullet {
     this.length = 18;
 
     this.frames = 0;
+    this.genus = 0;
+    this.invincible = 0;
     this.eliminate = false;
+    this.hitTestOffset = 18 + 3;
   }
 
   updateBaseVal() {
