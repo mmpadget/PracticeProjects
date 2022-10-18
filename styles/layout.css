@@ -1,0 +1,26 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    margin: 25px;
+    background-color: rgb(247, 193, 113);;
+    /* background: linear-gradient(#333, #000, #333); */
+    /* width: 90vw; */
+    /* height: 95vh; */
+    /* background: linear-gradient(crimson, skyblue); */
+    /* border: 4px outset deepskyblue; */
+    /* border-radius: 10px; */
+}
+
+.main {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    color: #FFF;
+    font: bold 2em sans-serif;
+    line-height: 0;
+}

@@ -1,0 +1,13 @@
+html {
+    background: rgb(247, 193, 113);
+    /* background: #333; */
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    background: rgb(247, 193, 113);
+    /* background: #333; */
+}

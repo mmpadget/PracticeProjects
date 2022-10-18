@@ -1,0 +1,25 @@
+{
+  "name": "practiceprojects",
+  "version": "1.0.0",
+  "description": "",
+  "browser": "index.html",
+  "scripts": {
+    "start": "live-server",
+    "dev": "live-server --browser='Google Chrome' --quiet",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dogmanstar/PracticeProjects.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dogmanstar/PracticeProjects/issues"
+  },
+  "homepage": "https://github.com/dogmanstar/PracticeProjects#readme",
+  "dependencies": {
+    "live-server": "^1.2.2"
+  }
+}

@@ -1,0 +1,40 @@
+.game-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#gameCanvas {
+    z-index: 3;
+    background-color: rgb(253, 229, 229);
+    border-style: solid;
+    border-width: 5px;
+    border-color: black;
+    border-radius: 15px;
+}
+
+.game-testing {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+#hit1 {
+    z-index: 2;
+    background-color: rgb(170, 17, 17);
+    border-style: solid;
+    border-width: 5px;
+    border-color: black;
+    border-radius: 15px;
+    margin-right: 15px;
+}
+
+#hit2 {
+    z-index: 1;
+    background-color: rgb(32, 25, 171);
+    border: '5px solid black';
+    border-radius: 15px;
+}
